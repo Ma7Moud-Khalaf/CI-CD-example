@@ -1,0 +1,33 @@
+name: CI/CD - Deploy HTML
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # CI: Get the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # CI: Test
+      - name: Check HTML file
+        run: |
+          test -f index.html
+          echo "HTML file exists"
+
+      # CD: Deploy to GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4
