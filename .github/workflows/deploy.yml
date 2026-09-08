@@ -1,26 +1,34 @@
 name: CI/CD - Deploy HTML
 
+
+
 on:
   push:
     branches:
-      - master
+      - master   # or main, depending on your branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      # CI: Get the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # CI: Test
       - name: Check HTML file
         run: |
           test -f index.html
           echo "HTML file exists"
 
-      # CD: Deploy to GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -30,4 +38,5 @@ jobs:
           path: .
 
       - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4
